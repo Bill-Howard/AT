@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct node {
     int value;
@@ -12,6 +13,11 @@ Node *insert_at_tail(Node *head, int value);
 Node *delete_at_head(Node *head);
 Node *delete_at_tail(Node *head);
 int length (Node *head);
+bool is_member(Node *head, int value);
+int count(Node *head, int value);
+void replace(Node *head, int value, int replacement);
+
+
 
 int main(void)
 {
@@ -115,4 +121,37 @@ int length (Node *head)
         current = current->next;
     } 
     return length;
+}
+
+bool is_member(Node *head, int value)
+{
+    if (head == NULL) {
+        return false;
+    } else if (head->value == value) {
+        return true;
+    } else {
+        return is_member(head->next, value)
+    }
+}
+
+int count(Node *head, int value)
+{
+    if (head == NULL) {
+        return 0;
+    } else if (head->value == value) {
+        return 1 + count(head->next, value);
+    } else {
+        return count(head->next, value);
+    }
+}
+
+void replace(Node *head, int value, int replacement)
+{
+    if (head != NULL) {
+        if (head->value == value) {
+            head->value = replacement;
+        }
+
+        replace(head->next, value, replacement);
+    }
 }
