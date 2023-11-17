@@ -130,7 +130,7 @@ bool is_member(Node *head, int value)
     } else if (head->value == value) {
         return true;
     } else {
-        return is_member(head->next, value)
+        return is_member(head->next, value);
     }
 }
 
