@@ -1,220 +1,115 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-typedef struct node
-{
-    int value;
-    struct node *next;
-} Node;
-
-void print_list(Node *head);
-Node *insert_at_head(Node *head, int value);
-Node *insert_at_tail(Node *head, int value);
-Node *delete_at_head(Node *head);
-Node *delete_at_tail(Node *head);
-int length(Node *head);
-bool is_member(Node *head, int value);
-int count(Node *head, int value);
-void replace(Node *head, int value, int replacement);
+#include <time.h>
+#include "llist.h"
 
 int main(void)
 {
-    Node a, b, c;
-    a.value = 5;
-    b.value = 6;
-    c.value = 7;
-    a.next = &b;
-    b.next = &c;
-    c.next = NULL;
+    Node *list1, *list2, *list3, *list4, *list5,
+        *list6;
+    list1 = list2 = list3 = list4 = list5 = list6 = NULL;
+    for (int i = 1; i <= 5; i++)
+        list1 = insert_at_head(list1, i);
+    for (int i = 8; i >= 4; i--)
+        list2 = insert_at_head(list2, i);
+    printf("List 1:\n");
+    print_list(list1);
+    printf("List 2:\n");
+    print_list(list2);
+    add_lists(list1, list2);
+    printf("List 1 after add:\n");
+    print_list(list1);
 
-    print_list(&a);
-}
+    for (int i = 1; i <= 2; i++)
+        list3 = insert_at_head(list3, i);
+    for (int i = 4; i <= 7; i++)
+        list4 = insert_at_head(list4, i);
+    printf("List 3:\n");
+    print_list(list3);
+    printf("List 4:\n");
+    print_list(list4);
+    add_lists(list3, list4);
+    printf("List 3 after add:\n");
+    print_list(list3);
 
-void print_list(Node *head)
-{
-    Node *current;
-    current = head;
-    int i = 0;
-    while (current != NULL)
-    {
-        printf("Node %d: %d\n", i, current->value);
-        i++;
-        current = current->next;
-    }
-}
+    for (int i = 4; i <= 7; i++)
+        list5 = insert_at_head(list5, i);
+    for (int i = 1; i <= 2; i++)
+        list6 = insert_at_head(list6, i);
+    printf("List 5:\n");
+    print_list(list5);
+    printf("List 6:\n");
+    print_list(list6);
+    add_lists(list5, list6);
+    printf("List 5 after add:\n");
+    print_list(list5);
 
-Node *insert_at_head(Node *head, int value)
-{
-    Node *new_node = calloc(1, sizeof(Node));
-    new_node->value = value;
+    Node *list7 = NULL;
+    for (int i = 0; i < 10; i++)
+        list7 = insert_at_head(list7, i);
+    printf("List 7:\n");
+    print_list(list7);
+    Node *list7_duplicate = duplicate_list(list7);
+    printf("List 7 duplicate list: \n");
+    print_list(list7_duplicate);
 
-    if (head == NULL)
-    {
-        return new_node;
-    }
-    else
-    {
-        new_node->next = head;
-        return new_node;
-    }
-}
+    srand(time(NULL));
+    Node *list11 = NULL;
+    Node *list12 = NULL;
+    for (int i = 0; i < 10; i++)
+        list11 = insert_at_head(list11, rand() % 99);
+    for (int i = 0; i < 10; i++)
+        list12 = insert_at_head(list12, rand() % 99);
+    sort_list(list11);
+    sort_list(list12);
+    printf("List 11:\n");
+    print_list(list11);
+    printf("List 12:\n");
+    print_list(list12);
+    Node *newhead =
+        merge_sorted_lists(list11, list12);
+    printf("Merged list:\n");
+    print_list(newhead);
 
-Node *insert_at_tail(Node *head, int value)
-{
-    Node *new_node = calloc(1, sizeof(Node));
-    new_node->value = value;
+    Node *list8 = NULL;
 
-    if (head == NULL)
-    {
-        return new_node;
-    }
-    else
-    {
-        Node *current = head;
+    list8 = insert_at_head(list8, 4);
+    list8 = insert_at_head(list8, 3);
+    list8 = insert_at_head(list8, 4);
+    list8 = insert_at_head(list8, 5);
+    list8 = insert_at_head(list8, 4);
+    list8 = insert_at_head(list8, 4);
+    list8 = insert_at_head(list8, 7);
+    list8 = insert_at_head(list8, 4);
+    list8 = insert_at_head(list8, 4);
 
-        while (current->next != NULL)
-        {
-            current = current->next;
-        }
-        current->next = new_node;
-        return head;
-    }
-}
+    printf("List before delete...\n");
+    print_list(list8);
+    int num_deleted = 0;
+    list8 = delete_match(list8, 4, &num_deleted);
+    printf("\nList after delete...\n");
+    print_list(list8);
+    printf("Number of elements deleted: %d\n", num_deleted);
 
-Node *delete_at_head(Node *head)
-{
-    if (head == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        Node *to_return = head->next;
-        free(head);
-        return to_return;
-    }
-}
+    Node *list9 = NULL, *list10 = NULL;
+    for (int i = 0; i < 50000; i++)
+        list9 = insert_at_head(list9, i % 10);
+    for (int i = 0; i < 50000; i++)
+        list10 = insert_at_head(list10, i % 10);
 
-Node *delete_at_tail(Node *head)
-{
-    if (head == NULL)
-    {
-        return NULL;
-    }
-    else if (head->next == NULL)
-    {
-        free(head);
-        return NULL;
-    }
-    else
-    {
-        Node *current = head;
-        Node *prev = NULL;
+    clock_t tic, toc;
+    tic = clock();
+    list9 = delete_all_matches(list9, 4, &num_deleted);
+    toc = clock();
+    printf("delete_all_matches: %fs\n",
+           (double)(toc - tic) / CLOCKS_PER_SEC);
+    printf("elements deleted: %d\n", num_deleted);
 
-        while (current->next != NULL)
-        {
-            prev = current;
-            current = current->next;
-        }
-
-        prev->next = NULL;
-        free(current);
-        return head;
-    }
-}
-
-int length(Node *head)
-{
-    Node *current;
-    int length = 0;
-
-    current = head;
-    while (current->next != NULL)
-    {
-        length++;
-        current = current->next;
-    }
-    return length;
-}
-
-bool is_member(Node *head, int value)
-{
-    if (head == NULL)
-    {
-        return false;
-    }
-    else if (head->value == value)
-    {
-        return true;
-    }
-    else
-    {
-        return is_member(head->next, value);
-    }
-}
-
-int count(Node *head, int value)
-{
-    if (head == NULL)
-    {
-        return 0;
-    }
-    else if (head->value == value)
-    {
-        return 1 + count(head->next, value);
-    }
-    else
-    {
-        return count(head->next, value);
-    }
-}
-
-void replace(Node *head, int value, int replacement)
-{
-    if (head != NULL)
-    {
-        if (head->value == value)
-        {
-            head->value = replacement;
-        }
-
-        replace(head->next, value, replacement);
-    }
-}
-
-Node *delete_first_match(Node *head, int value, bool *was_deleted)
-{
-    if (head == NULL)
-    {
-        *was_deleted = false;
-        return NULL;
-    }
-
-    if (head->value == value)
-    {
-        Node *temp = head->next;
-        free(head);
-        *was_deleted = true;
-        return temp;
-    }
-
-    Node *current = head->next;
-    Node *prev = head;
-
-    while (current != NULL)
-    {
-        if (current->value == value)
-        {
-            prev->next = current->next;
-            free(current);
-            *was_deleted = true;
-            return head;
-        }
-        prev = current;
-        current = current->next;
-    }
-
-    *was_deleted = false;
-    return head;
+    tic = clock();
+    list10 = delete_match(list10, 4, &num_deleted);
+    toc = clock();
+    printf("efficient_delete_match: %fs\n",
+           (double)(toc - tic) / CLOCKS_PER_SEC);
+    printf("elements deleted: %d\n", num_deleted);
 }
